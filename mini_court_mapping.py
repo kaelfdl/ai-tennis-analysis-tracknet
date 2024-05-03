@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
-from trace_header import video_file, check_path
+from math_utils import check_path
+from court_detection import video_file
 
 cap = cv2.VideoCapture(video_file)
 check_path(video_file)

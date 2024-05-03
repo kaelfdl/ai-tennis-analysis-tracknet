@@ -1,7 +1,6 @@
 import os
 import sys
-
-video_file = 'input_videos/input_video_a.mp4'
+import math
 
 def check_path(filepath):
     flag = 0
@@ -48,3 +47,13 @@ def find_intersection(line1, line2, x_start, y_start, x_end, y_end):
         return None
     
     return x, y
+
+def euclidean_distance(point1, point2):
+    return math.dist(point1, point2)
+
+def within_circle(center, radius, point):
+    return radius > euclidean_distance(center, point)
+
+def closest_point(prev_center, curr_center, prev_point, curr_point):
+    if euclidean_distance(prev_center, prev_point) <= euclidean_distance(curr_center, curr_point):
+        return True

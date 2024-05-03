@@ -3,17 +3,17 @@ import numpy as np
 import torch
 from mediapipe import solutions
 from mini_court_mapping import widthP, heightP, mini_court_map, show_lines, show_point, give_point
-from trace_header import calculate_pixels, find_intersection
+from math_utils import calculate_pixels, find_intersection, within_circle, euclidean_distance
 from ball_detection import BallDetector
 from body_tracking import body_map
-from ball_mapping import euclidean_distance, within_circle
+
+
+video_file = 'input_videos/input_video_a.mp4'
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-video_path = None
-
 # Retrieve video from video file
-cap = cv2.VideoCapture(video_path)
+cap = cv2.VideoCapture(video_file)
 width = int(cap.get(3))
 height = int(cap.get(4))
 
