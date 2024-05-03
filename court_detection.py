@@ -2,13 +2,10 @@ import cv2
 import numpy as np
 import torch
 from mediapipe import solutions
-from mini_court_mapping import widthP, heightP, mini_court_map, show_lines, show_point, give_point
+from mini_court_mapping import video_file, widthP, heightP, mini_court_map, show_lines, show_point, give_point
 from math_utils import calculate_pixels, find_intersection, within_circle, euclidean_distance
 from ball_detection import BallDetector
 from body_tracking import body_map
-
-
-video_file = 'input_videos/input_video_a.mp4'
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -210,7 +207,7 @@ while cap.isOpened():
                     x_f_left = intersect_x_f[0]
                     x_f_left_line = [[x1, y1], [x2, y2]]
                 if intersect_x_f[0] > x_f_right:
-                    x_f_right = intersect_y_f[0]
+                    x_f_right = intersect_x_f[0]
                     x_f_right_line = [[x1, y1], [x2, y2]]
             if intersect_y_f is not None:
                 if intersect_y_f[1] < y_f_top:
@@ -221,17 +218,17 @@ while cap.isOpened():
                     y_f_bottom_line = [[x1, y1], [x2, y2]]
 
     # Top line has margin of error that affects all court mapped outputs
-    y_o_top[0][1] = y_o_top[0][1] + 4
-    y_o_top[1][1] = y_o_top[1][1] + 4
+    y_o_top_line[0][1] = y_o_top_line[0][1] + 4
+    y_o_top_line[1][1] = y_o_top_line[1][1] + 4
 
-    y_f_top[0][1] = y_f_top[0][1] + 4
-    y_f_top[1][1] = y_f_top[1][1] + 4
+    y_f_top_line[0][1] = y_f_top_line[0][1] + 4
+    y_f_top_line[1][1] = y_f_top_line[1][1] + 4
 
     # Find four corners of the court and display it
     top_left_p = find_intersection(x_o_left_line, y_o_top_line, -extra_len, 0, width + extra_len, height)
     top_right_p = find_intersection(x_o_right_line, y_f_top_line, -extra_len, 0, width + extra_len, height)
     bottom_left_p = find_intersection(x_f_left_line, y_o_bottom_line, -extra_len, 0, width + extra_len, height)
-    bottom_right_p = find_intersection(x_f_right_line, y_f_bottom_line, -extra_len, 0, width + -extra_len, height)
+    bottom_right_p = find_intersection(x_f_right_line, y_f_bottom_line, -extra_len, 0, width + extra_len, height)
 
     # If all corner points are different or at least one of them are not found, rerun print
     if (not(top_left_p == n_top_left_p)) and (not(top_right_p == n_top_right_p)) and (not(bottom_left_p == n_bottom_left_p)) and (not(bottom_right_p == n_bottom_right_p)):

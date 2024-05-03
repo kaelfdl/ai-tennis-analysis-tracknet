@@ -1,7 +1,8 @@
 import numpy as np
 import cv2
 from math_utils import check_path
-from court_detection import video_file
+
+video_file = 'input_videos/input_video_a.mp4'
 
 cap = cv2.VideoCapture(video_file)
 check_path(video_file)
