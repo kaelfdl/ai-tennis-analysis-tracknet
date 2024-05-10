@@ -2,7 +2,7 @@ from mediapipe import solutions
 import cv2
 
 mp_pose = solutions.pose
-
+mp_drawing = solutions.drawing_utils
 def body_map(frame, pose1, pose2, crop1, crop2):
 
     # Mapping of player 1
@@ -10,22 +10,22 @@ def body_map(frame, pose1, pose2, crop1, crop2):
     frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
     results1 = pose1.process(frame1)
     frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
-
+    mp_drawing.draw_landmarks(frame1, results1.pose_landmarks, solutions.pose.POSE_CONNECTIONS)
     if results1.pose_landmarks is not None:
         l1_foot_x = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_FOOT_INDEX].x * crop1.x) + crop1.x_offset
-        l1_foot_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_FOOT_INDEX].x * crop1.y) + crop1.y_offset
+        l1_foot_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_FOOT_INDEX].y * crop1.y) + crop1.y_offset
 
         r1_foot_x = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_FOOT_INDEX].x * crop1.x) + crop1.x_offset
-        r1_foot_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_FOOT_INDEX].x * crop1.y) + crop1.y_offset
+        r1_foot_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_FOOT_INDEX].y * crop1.y) + crop1.y_offset
 
         l1_hand_x = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_INDEX].x * crop1.x) + crop1.x_offset
-        l1_hand_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_INDEX].x * crop1.y) + crop1.y_offset
+        l1_hand_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_INDEX].y * crop1.y) + crop1.y_offset
 
         r1_hand_x = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_INDEX].x * crop1.x) + crop1.x_offset
-        r1_hand_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_INDEX].x * crop1.y) + crop1.y_offset
+        r1_hand_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_INDEX].y * crop1.y) + crop1.y_offset
 
         nose1_x = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.NOSE].x * crop1.x) + crop1.x_offset
-        nose1_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.NOSE].x * crop1.y) + crop1.y_offset
+        nose1_y = int(results1.pose_landmarks.landmark[mp_pose.PoseLandmark.NOSE].y * crop1.y) + crop1.y_offset
     else:
         l1_foot_x = None
         l1_foot_y = None
@@ -48,6 +48,7 @@ def body_map(frame, pose1, pose2, crop1, crop2):
     frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB)
     results2 = pose2.process(frame2)
     frame2 = cv2.cvtColor(frame2, cv2.COLOR_RGB2BGR)
+    mp_drawing.draw_landmarks(frame2, results2.pose_landmarks, solutions.pose.POSE_CONNECTIONS)
 
     if results2.pose_landmarks is not None:
         l2_foot_x = int(results2.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_FOOT_INDEX].x * crop2.x) + crop2.x_offset

@@ -115,7 +115,7 @@ class BallTrackNet(nn.Module):
         ret, heatmap = cv2.threshold(heatmap, 127, 255, cv2.THRESH_BINARY)
 
         # find the circle in image with 2 <= radius <=7
-        circles = cv2.HoughCircles(heatmap, cv2.HOUGH_GRADIENT, dp=1, minDist=1, param1=50, param2=8, minRadius=0, maxRadius=0)
+        circles = cv2.HoughCircles(heatmap, cv2.HOUGH_GRADIENT, dp=1, minDist=1, param1=50, param2=8, minRadius=2, maxRadius=7)
         
         
 
@@ -125,6 +125,6 @@ class BallTrackNet(nn.Module):
                 x = int(circles[0][0][0])
                 y = int(circles[0][0][1])
             
-            return x, y
+                return x, y
         return None, None
 

@@ -51,7 +51,7 @@ def show_lines(frame):
     # Whole court
     cv2.rectangle(frame, (x_offset, y_offset), (mini_court_width + x_offset, mini_court_height + y_offset), (255, 255, 255), 2)
     # Net
-    cv2.rectangle(frame, (x_offset, y_offset + mini_half_court_height), (mini_court_width + x_offset, mini_court_height + y_offset + mini_half_court_height), (255, 255, 255), 2)
+    cv2.rectangle(frame, (x_offset, y_offset + mini_half_court_height), (mini_court_width + x_offset, y_offset + mini_half_court_height), (255, 255, 255), 2)
     # Singles court
     cv2.rectangle(frame, (x_offset + mini_doubles_alley_width, y_offset), (mini_court_width + x_offset - mini_doubles_alley_width, mini_court_height + y_offset), (255, 255, 255), 2)
     # No mans land
@@ -63,7 +63,7 @@ def show_lines(frame):
 def show_point(frame, M, point):
     points = np.float32([[point]])
     transformed = cv2.perspectiveTransform(points, M)[0][0]
-    cv2.circle(frame, (int(transformed[0]), int(transformed[0])), radius=0, color=(0, 0, 255), thickness=25)
+    cv2.circle(frame, (int(transformed[0]), int(transformed[1])), radius=0, color=(0, 0, 255), thickness=25)
     return frame
 
 def give_point(M, point):

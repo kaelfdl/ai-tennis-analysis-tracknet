@@ -140,9 +140,11 @@ while cap.isOpened():
 
     for hp_line in hp_lines:
         x1, y1, x2, y2 = hp_line[0]
+        # cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 0), 2)
         
         for p in range(8):
             if (i == intersect_num[p][1]) and (intersect_num[i][0] > 0):
+                # cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
                 cv2.floodFill(non_rect_area, np.zeros((height + 2, width + 2), np.uint8), (x1, y1), 1)
                 cv2.floodFill(non_rect_area, np.zeros((height + 2, width + 2), np.uint8), (x2, y2), 1)
         i += 1
@@ -216,6 +218,20 @@ while cap.isOpened():
                 if intersect_y_f[1] > y_f_bottom:
                     y_f_bottom = intersect_y_f[1]
                     y_f_bottom_line = [[x1, y1], [x2, y2]]
+            # cv2.line(frame, (x1, y1), (x2, y2), (0, 0 , 255), 2)
+    
+    line_endpoints = []
+    line_endpoints.append(x_o_left_line)
+    line_endpoints.append(x_o_right_line)
+    line_endpoints.append(y_o_top_line)
+    line_endpoints.append(y_o_bottom_line)
+    line_endpoints.append(x_f_left_line)
+    line_endpoints.append(x_f_right_line)
+    line_endpoints.append(y_f_top_line)
+    line_endpoints.append(y_f_bottom_line)
+
+    # for i in range(len(line_endpoints)):
+    #     cv2.line(frame, (line_endpoints[i][0][0], line_endpoints[i][0][1]), (line_endpoints[i][1][0], line_endpoints[i][1][1]), (0, 0, 255), 2)
 
     # Top line has margin of error that affects all court mapped outputs
     y_o_top_line[0][1] = y_o_top_line[0][1] + 4
@@ -232,16 +248,49 @@ while cap.isOpened():
 
     # If all corner points are different or at least one of them are not found, rerun print
     if (not(top_left_p == n_top_left_p)) and (not(top_right_p == n_top_right_p)) and (not(bottom_left_p == n_bottom_left_p)) and (not(bottom_right_p == n_bottom_right_p)):
+        # cv2.line(frame, top_left_p, top_right_p, (0, 0, 255), 2)
+        # cv2.line(frame, bottom_left_p, bottom_right_p, (0, 0, 255), 2)
+        # cv2.line(frame, top_left_p, bottom_left_p, (0, 0, 255), 2)
+        # cv2.line(frame, top_right_p, bottom_right_p, (0, 0, 255), 2)
+
+        cv2.circle(frame, top_left_p, radius=0, color=(255, 0, 255), thickness=10)
+        cv2.circle(frame, top_right_p, radius=0, color=(255, 0, 255), thickness=10)
+        cv2.circle(frame, bottom_left_p, radius=0, color=(255, 0, 255), thickness=10)
+        cv2.circle(frame, bottom_right_p, radius=0, color=(255, 0, 255), thickness=10)
+
         n_top_left_p = top_left_p
         n_top_right_p = top_right_p
         n_bottom_left_p = bottom_left_p
         n_bottom_right_p = bottom_right_p
+    
+    else:
+        # cv2.line(frame, n_top_left_p, n_top_right_p, (0, 0, 255), 2)
+        # cv2.line(frame, n_bottom_left_p, n_bottom_right_p, (0, 0, 255), 2)
+        # cv2.line(frame, n_top_left_p, n_bottom_left_p, (0, 0, 255), 2)
+        # cv2.line(frame, n_top_right_p, n_bottom_right_p, (0, 0, 255), 2)
+
+
+        cv2.circle(frame, n_top_left_p, radius=0, color=(255, 0, 255), thickness=10)
+        cv2.circle(frame, n_top_right_p, radius=0, color=(255, 0, 255), thickness=10)
+        cv2.circle(frame, n_bottom_left_p, radius=0, color=(255, 0, 255), thickness=10)
+        cv2.circle(frame, n_bottom_right_p, radius=0, color=(255, 0, 255), thickness=10)
+
 
     # Displaying feet and hand points from body_map function
     hand_points_prev = hand_points
     feet_points, hand_points, nose_points = body_map(frame, body1.pose, body2.pose, crop1, crop2)
 
-    if (not(any(item is None for sublist in feet_points for item in sublist)) or (not(any(item is None for sublist in hand_points for item in sublist)) or (not(any(item is None for sublist in nose_points for item in sublist))))):
+    if (not(any(item is None for sublist in feet_points for item in sublist)) or (not any(item is None for sublist in hand_points for item in sublist)) or (not any(item is None for sublist in nose_points for item in sublist))):
+
+        # cv2.circle(frame, hand_points[0], radius=0, color=(0, 0, 255), thickness=10)
+        # cv2.circle(frame, hand_points[1], radius=0, color=(0, 0, 255), thickness=10)
+        # cv2.circle(frame, hand_points[2], radius=0, color=(0, 0, 255), thickness=30)
+        # cv2.circle(frame, hand_points[3], radius=0, color=(0, 0, 255), thickness=30)
+
+        # cv2.circle(frame, feet_points[0], radius=0, color=(0, 0, 255), thickness=10)
+        # cv2.circle(frame, feet_points[1], radius=0, color=(0, 0, 255), thickness=10)
+        # cv2.circle(frame, feet_points[2], radius=0, color=(0, 0, 255), thickness=30)
+        # cv2.circle(frame, feet_points[3], radius=0, color=(0, 0, 255), thickness=30)
 
         # Prioritizing lower foot y in body average y position
         if feet_points[0][1] > feet_points[1][1]:
@@ -275,7 +324,7 @@ while cap.isOpened():
 
         # Calculate euclidian distance between average of feet and hand indexes for both players
         circle_radius_body1 = int(0.65 * euclidean_distance(nose_points[0], [body1.x, body1.y]))
-        circle_radius_body2 = int(0.65 * euclidean_distance(nose_points[1], [body2.x, body2.y]))
+        circle_radius_body2 = int(0.6 * euclidean_distance(nose_points[1], [body2.x, body2.y]))
 
         # Distorting frame and outputting results
         processed_frame, M = mini_court_map(frame, n_top_left_p, n_top_right_p, n_bottom_left_p, n_bottom_right_p)
@@ -380,7 +429,6 @@ while len(coords) > 1:
         y = int(location[1] + ((i - time) / time_diff) * (coords[0][2][1] - location[1]))
         ball_array.append(((x, y), i))
 
-print(coords)
 ball_array.append(((coords[0][1][0], coords[0][2][1]), coords[0][3]))
 
 # Overlay ball information on the previous video
@@ -389,17 +437,24 @@ counter = 0
 cap = cv2.VideoCapture('output/output.mp4')
 write_flag = False
 
+print(len(coords))
+print(coords)
+print(len(ball_array))
 while cap.isOpened():
     ret, frame = cap.read()
     if frame is None:
         break
 
     counter += 1
-
     for i in range(len(ball_array)):
         if counter == ball_array[i][1]:
             cv2.circle(frame, (ball_array[i][0]), 4, (0, 255, 255), 3)
             break
+    
+    # for i in range(len(accelerations)):
+    #     if counter == accelerations[i][1]:
+    #         print(accelerations[i])
+    #         break
 
     if counter == ball_array[0][1]:
         write_flag = True
@@ -411,7 +466,7 @@ while cap.isOpened():
         index = counter - ball_array[0][1]
         cv2.circle(frame, (ball_array[index][0]), 2, (0, 255, 255), 3)
 
-    clip.write()
+    clip.write(frame)
 
 cap.release()
 clip.release()
