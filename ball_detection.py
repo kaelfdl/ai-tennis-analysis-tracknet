@@ -35,7 +35,7 @@ class BallDetector:
         # Load TrackNet model weights
         self.detector = BallTrackNet(out_channels=out_channels)
         saved_state_dict = torch.load(save_state, map_location=torch.device('cpu'))
-        self.detector.load_state_dict(saved_state_dict['state_dict'])
+        self.detector.load_state_dict(saved_state_dict['model_state'])
         self.detector.eval().to(self.device)
 
         self.current_frame = None
